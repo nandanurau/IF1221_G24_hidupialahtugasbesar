@@ -1,0 +1,50 @@
+/*Fakta*/
+/*warna(X): berwarna X*/
+warna(merah).
+warna(kuning).
+warna(hijau).
+warna(biru).
+warna(hitam).
+
+/*jenis(X): berjenis X*/
+jenis(angka).
+jenis(skip).
+jenis(reverse).
+jenis(draw_two).
+jenis(wild).
+jenis(wild_draw_four).
+jenis(mimic). /*bonus*/
+
+/*angka(X): X angka yang valid untuk kartu*/
+angka(0).
+angka(1).
+angka(2).
+angka(3).
+angka(4).
+angka(5).
+angka(6).
+angka(7).
+angka(8).
+angka(9).
+
+/*validasi kartu*/
+kartu(Warna, Jenis) :-
+    warna(Warna),
+    Warna \== hitam,
+    angka(Jenis).
+
+jenis_aksi(skip).
+jenis_aksi(reverse).
+jenis_aksi(draw_two).
+
+kartu(Warna, Jenis) :-
+    warna(Warna),
+    Warna \== hitam,
+    jenis_aksi(Jenis).
+
+jenis_spesial(wild).
+jenis_spesial(wild_draw_four).
+jenis_spesial(mimic).
+
+kartu(hitam, Jenis) :-
+    jenis_spesial(Jenis).
