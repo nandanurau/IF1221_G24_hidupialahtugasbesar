@@ -8,7 +8,6 @@ lihatKartu :-
         write('Berikut kartu yang anda miliki.'), nl,
         printCardList(List, 1)
     ), !.
-    
 
 printCardList([], _).
 printCardList([kartu(W, J)|T], No) :-
@@ -20,6 +19,7 @@ printCardList([H|T], No) :-
     format('~d. ~w~n', [No, H]),
     N1 is No + 1,
     printCardList(T, N1).
+
 
 /* cekInfo */
 cekInfo :-

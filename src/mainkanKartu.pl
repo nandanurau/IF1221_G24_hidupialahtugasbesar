@@ -19,7 +19,7 @@ ambilKartuDariDeck(Pemain, N) :-
     ambilKartu(N, Deck, KartuBaru, DeckSisa),
     assertz(tumpukan_deck(DeckSisa)),
     retract(kartu_tangan(Pemain, TanganLama)),
-    append(TanganLama, KartuBaru, TanganBaru),
+    append_list(TanganLama, KartuBaru, TanganBaru),
     assertz(kartu_tangan(Pemain, TanganBaru)).
 
 /* Meminta pemain pilih warna baru */
@@ -40,7 +40,7 @@ terapkanEfek(skip) :-
 terapkanEfek(reverse) :-
     write('Arah permainan dibalik.'), nl,
     retract(urutan_pemain(List)),
-    reverse(List, NewList),
+    reverse_list(List, NewList),
     assertz(urutan_pemain(NewList)).
 terapkanEfek(draw_two) :-
     urutan_pemain([_, PemainBerikutnya|_]),

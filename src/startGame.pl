@@ -12,7 +12,7 @@
 /* startGame*/
 startGame :-
     game_started, !,
-    write('Game sudah berjalan! Ketik exit jika ingin mengulang.'), nl.
+    write('Permainan sudah dimulai.'), nl.
 
 startGame :-
     retractall(urutan_pemain(_)),
@@ -131,7 +131,7 @@ inisialisasiDeck(Deck) :-
     append_list(DeckMerah, DeckKuning, Temp1),
     append_list(DeckHijau, DeckBiru, Temp2),
     append_list(Temp1, Temp2, DeckWarna),
-    DeckHitam = [wild, wild, wild, wild, wild_draw_four, wild_draw_four, wild_draw_four, wild_draw_four],
+    DeckHitam = [kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four)],
     append_list(DeckWarna, DeckHitam, Deck).
 
 buat_per_warna(Warna, [kartu(Warna, 0)|Sisa]) :-
