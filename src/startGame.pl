@@ -1,6 +1,4 @@
 :- include('fakta.pl').
-:- include('command.pl').
-:- include('logic.pl').
 
 :- dynamic(kartu_meja/1).
 :- dynamic(kartu_tangan/2). 
@@ -28,8 +26,7 @@ startGame :-
     tampilkanKartu,
 
     cekGiliran,
-    game_loop.
-    % gantiGiliran.
+    gantiGiliran.
     
 /*Input pemain*/
 jumlahPemainDiRange(N) :-
@@ -181,21 +178,3 @@ inisialisasiDiscard([Head|Tail], Kartu, Deck) :-
 tampilkanKartu :-
     kartu(W, J),
     write(W), write('-'), write(J), nl.
-
-game_loop :-
-    repeat,
-    read(Command),
-    (
-        Command == exit -> !,
-        writeln('Game ended.'),
-        retractall(urutan_pemain(_)),
-        retractall(kartu_tangan(_, _)),
-        retractall(kartu_meja(_))
-    ;
-        (
-            call(Command) -> true 
-        ; 
-            writeln('Command not found')
-        ), 
-        fail
-    ).
