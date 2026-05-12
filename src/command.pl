@@ -41,6 +41,18 @@ printPlayerDetail([P|T], Idx) :-
     NewIdx is Idx + 1,
     printPlayerDetail(T, NewIdx).
 
+/* lihatCommand */
+lihatCommand :-
+    nl,
+    write('Aksi utama yang tersedia:'), nl,
+    write('1. mainkanKartu'), nl,
+    write('2. ambilKartu'), nl,
+    write('3. tantang'), nl,
+    nl,
+    write('Aksi pendukung yang tersedia:'), nl,
+    write('1. lihatCommand'), nl,
+    write('2. lihatKartu'), nl,
+    write('3. cekInfo'), nl.
 
 /* for testing */
 skip :-
