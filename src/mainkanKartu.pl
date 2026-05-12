@@ -16,11 +16,17 @@ getNomorKartu(Nomor, Hand, Kartu, Index) :-
 /* Mengambil N kartu dari deck */
 ambilKartuDariDeck(Pemain, N) :-
     retract(tumpukan_deck(Deck)),
-    ambilKartu(N, Deck, KartuBaru, DeckSisa),
+    ambilNKartu(N, Deck, KartuBaru, DeckSisa),
     assertz(tumpukan_deck(DeckSisa)),
     retract(kartu_tangan(Pemain, TanganLama)),
     append_list(TanganLama, KartuBaru, TanganBaru),
     assertz(kartu_tangan(Pemain, TanganBaru)).
+
+/* Mengambil 1 kartu dari deck dan melanjutkan ke giliran selanjutnya */
+ambilKartu :-
+    urutan_pemain([Pemain|_]),
+    ambilKartuDariDeck(Pemain, 1),
+    gantiGiliran.
 
 /* Meminta pemain pilih warna baru */
 pilihWarna(Warna) :-
