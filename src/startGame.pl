@@ -1,4 +1,6 @@
 :- include('fakta.pl').
+:- include('command.pl').
+:- include('mainkanKartu.pl').
 :- include('rules.pl').
 
 :- dynamic(kartu_meja/1).
@@ -10,9 +12,16 @@
 /* startGame*/
 startGame :-
     game_started, !,
-    write('Permainan sudah dimulai.'), nl.
+    write('Game sudah berjalan! Ketik exit jika ingin mengulang.'), nl.
 
 startGame :-
+    retractall(urutan_pemain(_)),
+    retractall(kartu_tangan(_, _)),
+    retractall(kartu_meja(_)),
+    retractall(tumpukan_deck(_)),
+
+    assertz(game_started),
+
     jumlahPemain(TotalPemain),
     daftarPemainkeList(TotalPemain, ListPemain),
 
@@ -25,14 +34,16 @@ startGame :-
     randomCard(Deck, DeckHasil),
     bagiKartu(ListUrutan, DeckHasil, DeckSisa),
     write('Setiap pemain mendapatkan 7 kartu acak.'), nl,
-    write('Kartu discard top: '),
+    % write('Kartu discard top: '),
     inisialisasiDiscard(DeckSisa, KartuMeja, DeckFinal),
     assertz(kartu_meja(KartuMeja)),
     assertz(tumpukan_deck(DeckFinal)),
-    tampilkanKartu,
+    % tampilkanKartu,
+    KartuMeja = kartu(WM, JM),
+    format('Kartu discard top: ~w-~w~n', [WM, JM]),
 
-    cekGiliran,
-    gantiGiliran.
+    game_loop.
+    % gantiGiliran.
     
 /*Input pemain*/
 jumlahPemainDiRange(N) :-
@@ -61,6 +72,7 @@ inputNama(Current, Total, Akumulator, ListNama) :-
     Current =< Total,
     write('Masukkan nama pemain '), write(Current), write(': '),
     validasiNama(Nama, Akumulator),
+    !,
     Next is Current+1,
     inputNama(Next, Total, [Nama|Akumulator], ListNama).
 
@@ -70,13 +82,15 @@ isMember(X, [_|T]):- isMember(X, T).
 
 /* memastikan nama yang dimasukkan unik */
 validasiNama(Nama, ListLama) :-
-    repeat,
+    % repeat,
     read(X),
     nl,
     (\+ isMember(X, ListLama) ->
-    Nama = X, !
-    ; write('Nama sudah digunakan. Masukkan nama lain: '),
-    fail).
+        Nama = X, !
+    ; 
+        write('Nama sudah digunakan. Masukkan nama lain: '),
+        validasiNama(Nama, ListLama)
+    ).
 
 /*Urutan Pemain
   untuk menentukan urutan pemain*/
@@ -166,3 +180,33 @@ inisialisasiDiscard([Head|Tail], Kartu, Deck) :-
 tampilkanKartu :-
     kartu(W, J),
     write(W), write('-'), write(J), nl.
+
+game_loop :-
+    repeat,
+    nl,
+    cekGiliran,
+    write('>> '),
+    read(Command),
+    (
+        /* for testing */
+        Command == exit -> !,
+        write('Game ended.'), nl,
+        retractall(urutan_pemain(_)),
+        retractall(kartu_tangan(_, _)),
+        retractall(kartu_meja(_)),
+        retractall(tumpukan_deck(_))
+        ;
+        (
+            Command == lihatKartu -> lihatKartu, fail
+            ;
+            Command == cekInfo -> cekInfo, fail
+            ;
+            Command = mainkanKartu(N) -> mainkanKartu(N), fail
+            ; 
+            /* for testing */
+            Command == skip -> skip, fail
+            ;
+            write('Command not found'), nl, fail
+        ), 
+        fail
+    ).
