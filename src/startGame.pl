@@ -1,11 +1,17 @@
 :- include('fakta.pl').
+:- include('rules.pl').
 
 :- dynamic(kartu_meja/1).
 :- dynamic(kartu_tangan/2). 
 :- dynamic(urutan_pemain/1).
 :- dynamic(tumpukan_deck/1).
+:- dynamic(game_started/0).
 
 /* startGame*/
+startGame :-
+    game_started, !,
+    write('Permainan sudah dimulai.'), nl.
+
 startGame :-
     jumlahPemain(TotalPemain),
     daftarPemainkeList(TotalPemain, ListPemain),
@@ -38,9 +44,12 @@ jumlahPemain(N) :-
     repeat,
     write('Masukkan jumlah pemain: '),
     read(X),
-    (jumlahPemainDiRange(X) -> N = X
-    ; write('Mohon masukkan angka antara 2 - 4'), nl,
-    jumlahPemain(N)).
+    (   number(X) ->  
+    (jumlahPemainDiRange(X) -> N = X, !
+        ; write('Mohon masukkan angka antara 2 - 4'), nl, fail
+        )
+    ; write('Input harus berupa angka'), nl, fail
+    ).
 
 /*fungsi pembantu untuk mendaftarkan pemain*/
 daftarPemainkeList(Total, ListHasil) :-
@@ -69,27 +78,6 @@ validasiNama(Nama, ListLama) :-
     ; write('Nama sudah digunakan. Masukkan nama lain: '),
     fail).
 
-/*fungsi-fungsi pembantu*/
-get_length(List, Length) :-
-    length(List, Length).
-
-get_index([Element|_], Element, 0).
-get_index([_|Tail], Element, Index) :-
-    get_index(Tail, Element, Index1),
-    Index is Index1+1.
-
-get_element([Element|_], 0, Element).
-get_element([_|Tail], Index, Element) :-
-    Index > 0,
-    NewIndex is Index-1,
-    get_element(Tail, NewIndex, Element).
-
-delete_element([_|Tail], 0, Tail).
-delete_element([Head|Tail], Index, [Head|UpdatedTail]) :-
-    Index > 0,
-    NewIndex is Index-1,
-    delete_element(Tail, NewIndex, UpdatedTail).
-
 /*Urutan Pemain
   untuk menentukan urutan pemain*/
 urutkanPemain([],[]).
@@ -116,7 +104,7 @@ cekGiliran :-
 
 gantiGiliran :-
     retract(urutan_pemain([H|T])),
-    append(T, [H], ListUrutanBaru),
+    append_list(T, [H], ListUrutanBaru),
     assertz(urutan_pemain(ListUrutanBaru)).
 
 /*Distribusi kartu secara acak*/
@@ -126,11 +114,11 @@ inisialisasiDeck(Deck) :-
     buat_per_warna(kuning, DeckKuning),
     buat_per_warna(hijau, DeckHijau),
     buat_per_warna(biru, DeckBiru),
-    append(DeckMerah, DeckKuning, Temp1),
-    append(DeckHijau, DeckBiru, Temp2),
-    append(Temp1, Temp2, DeckWarna),
+    append_list(DeckMerah, DeckKuning, Temp1),
+    append_list(DeckHijau, DeckBiru, Temp2),
+    append_list(Temp1, Temp2, DeckWarna),
     DeckHitam = [wild, wild, wild, wild, wild_draw_four, wild_draw_four, wild_draw_four, wild_draw_four],
-    append(DeckWarna, DeckHitam, Deck).
+    append_list(DeckWarna, DeckHitam, Deck).
 
 buat_per_warna(Warna, [kartu(Warna, 0)|Sisa]) :-
     generate_double(Warna, 1, Sisa).
@@ -172,7 +160,7 @@ inisialisasiDiscard([kartu(Warna, Angka)|Sisa], kartu(Warna, Angka), Sisa) :-
     angka(Angka), !.
 
 inisialisasiDiscard([Head|Tail], Kartu, Deck) :-
-    append(Tail, [Head], DeckBaru),
+    append_list(Tail, [Head], DeckBaru),
     inisialisasiDiscard(DeckBaru, Kartu, Deck).
 
 tampilkanKartu :-
