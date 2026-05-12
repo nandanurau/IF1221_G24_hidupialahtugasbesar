@@ -156,15 +156,15 @@ randomCard(Hand, [Element|SisaHand]) :-
     delete_element(Hand, Index, UpdatedList),
     randomCard(UpdatedList, SisaHand).
 
-ambilKartu(0, Deck, [], Deck) :- !.
-ambilKartu(N, [H|T], [H|Diambil], Sisa) :-
+ambilNKartu(0, Deck, [], Deck) :- !.
+ambilNKartu(N, [H|T], [H|Diambil], Sisa) :-
     N > 0,
     N1 is N-1,
-    ambilKartu(N1, T, Diambil, Sisa).
+    ambilNKartu(N1, T, Diambil, Sisa).
 
 bagiKartu([], Deck, Deck).
 bagiKartu([Pemain|SisaPemain], DeckLama, DeckFinal) :-
-    ambilKartu(7, DeckLama, Tangan, DeckSisa),
+    ambilNKartu(7, DeckLama, Tangan, DeckSisa),
     assertz(kartu_tangan(Pemain, Tangan)),
     bagiKartu(SisaPemain, DeckSisa, DeckFinal).
 
