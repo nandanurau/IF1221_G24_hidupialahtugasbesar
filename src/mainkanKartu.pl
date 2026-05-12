@@ -1,30 +1,17 @@
-:- include('startGame.pl').
-
-:- dynamic(kartu_meja/1).
-:- dynamic(kartu_tangan/2).
-:- dynamic(urutan_pemain/1).
-:- dynamic(tumpukan_deck/1).
-
 /* Mengecek kartu valid */
 kartuValid(kartu(W, _), kartu(W, _)) :-
-    W \== hitam.
+    W \== hitam, !.
 kartuValid(kartu(_, J), kartu(_, J)) :-
     J \== wild,
-    J \== draw_two.
+    J \== wild_draw_four,
+    J \== draw_two, !.
 kartuValid(kartu(hitam, wild), _).
-kartuValid(kartu(hitam, wild_draw_four), kartu(_, J)) :- 
-    J \== wild_draw_four.
+kartuValid(kartu(hitam, wild_draw_four), _).
 
 /* Mengambil nomor kartu */
 getNomorKartu(Nomor, Hand, Kartu, Index) :-
     Index is Nomor - 1,
     get_element(Hand, Index, Kartu).
-
-/* Mengganti giliran */
-gantiGiliran :-
-    retract(urutan_pemain([Pemain|Sisa])),
-    append(Sisa, [Pemain], UrutanBaru),
-    assertz(urutan_pemain(UrutanBaru)).
 
 /* Mengambil N kartu dari deck */
 ambilKartuDariDeck(Pemain, N) :-
@@ -89,13 +76,14 @@ mainkanKartu(NomorUrutKartuDiTangan) :-
     get_length(Hand, Len),
 
     (   (NomorUrutKartuDiTangan < 1 ; NomorUrutKartuDiTangan > Len) ->
-        write('Nomor urut tidak valid. Coba lagi.'), nl, fail
+        write('Nomor urut tidak valid. Coba lagi.'), nl
     ;   getNomorKartu(NomorUrutKartuDiTangan, Hand, KartuDipilih, Index),
+        !,
         kartu_meja(KartuMeja),
 
         (   kartuValid(KartuDipilih, KartuMeja) ->
-            (   KartuDipilih = kartu(hitam, wild_draw_four), punyaKartuCocok(Pemain, KartuMeja) ->
-                write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl, fail
+            (   KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(Pemain, KartuMeja) ->
+                write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl
             ;   KartuDipilih = kartu(W, J),
                 write(Pemain), write(' memainkan kartu: '), write(W), write('-'), write(J), nl,
 
@@ -111,8 +99,8 @@ mainkanKartu(NomorUrutKartuDiTangan) :-
 
                 terapkanEfek(J),
                 gantiGiliran,
-                cekGiliran, !
+                !
             )
-        ;   write('Kartu tidak valid. Pilih kartu lain.'), nl, fail
+        ;   write('Kartu tidak valid. Pilih kartu lain.'), nl
         )
-    ).
+    ), !.

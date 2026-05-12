@@ -1,14 +1,26 @@
 :- include('fakta.pl').
 :- include('command.pl').
-:- include('logic.pl').
+:- include('mainkanKartu.pl').
 
 :- dynamic(kartu_meja/1).
 :- dynamic(kartu_tangan/2). 
 :- dynamic(urutan_pemain/1).
 :- dynamic(tumpukan_deck/1).
+:- dynamic(game_started/0).
 
 /* startGame*/
 startGame :-
+    game_started, !,
+    write('Game sudah berjalan! Ketik exit jika ingin mengulang.'), nl.
+
+startGame :-
+    retractall(urutan_pemain(_)),
+    retractall(kartu_tangan(_, _)),
+    retractall(kartu_meja(_)),
+    retractall(tumpukan_deck(_)),
+
+    assertz(game_started),
+
     jumlahPemain(TotalPemain),
     daftarPemainkeList(TotalPemain, ListPemain),
 
@@ -21,13 +33,14 @@ startGame :-
     randomCard(Deck, DeckHasil),
     bagiKartu(ListUrutan, DeckHasil, DeckSisa),
     write('Setiap pemain mendapatkan 7 kartu acak.'), nl,
-    write('Kartu discard top: '),
+    % write('Kartu discard top: '),
     inisialisasiDiscard(DeckSisa, KartuMeja, DeckFinal),
     assertz(kartu_meja(KartuMeja)),
     assertz(tumpukan_deck(DeckFinal)),
-    tampilkanKartu,
+    % tampilkanKartu,
+    KartuMeja = kartu(WM, JM),
+    format('Kartu discard top: ~w-~w~n', [WM, JM]),
 
-    cekGiliran,
     game_loop.
     % gantiGiliran.
     
@@ -55,6 +68,7 @@ inputNama(Current, Total, Akumulator, ListNama) :-
     Current =< Total,
     write('Masukkan nama pemain '), write(Current), write(': '),
     validasiNama(Nama, Akumulator),
+    !,
     Next is Current+1,
     inputNama(Next, Total, [Nama|Akumulator], ListNama).
 
@@ -64,13 +78,15 @@ isMember(X, [_|T]):- isMember(X, T).
 
 /* memastikan nama yang dimasukkan unik */
 validasiNama(Nama, ListLama) :-
-    repeat,
+    % repeat,
     read(X),
     nl,
     (\+ isMember(X, ListLama) ->
-    Nama = X, !
-    ; write('Nama sudah digunakan. Masukkan nama lain: '),
-    fail).
+        Nama = X, !
+    ; 
+        write('Nama sudah digunakan. Masukkan nama lain: '),
+        validasiNama(Nama, ListLama)
+    ).
 
 /*fungsi-fungsi pembantu*/
 get_length(List, Length) :-
@@ -132,7 +148,7 @@ inisialisasiDeck(Deck) :-
     append(DeckMerah, DeckKuning, Temp1),
     append(DeckHijau, DeckBiru, Temp2),
     append(Temp1, Temp2, DeckWarna),
-    DeckHitam = [wild, wild, wild, wild, wild_draw_four, wild_draw_four, wild_draw_four, wild_draw_four],
+    DeckHitam = [kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four)],
     append(DeckWarna, DeckHitam, Deck).
 
 buat_per_warna(Warna, [kartu(Warna, 0)|Sisa]) :-
@@ -184,18 +200,30 @@ tampilkanKartu :-
 
 game_loop :-
     repeat,
+    nl,
+    cekGiliran,
+    write('>> '),
     read(Command),
     (
+        /* for testing */
         Command == exit -> !,
-        writeln('Game ended.'),
+        write('Game ended.'), nl,
         retractall(urutan_pemain(_)),
         retractall(kartu_tangan(_, _)),
-        retractall(kartu_meja(_))
-    ;
+        retractall(kartu_meja(_)),
+        retractall(tumpukan_deck(_))
+        ;
         (
-            call(Command) -> true 
-        ; 
-            writeln('Command not found')
+            Command == lihatKartu -> lihatKartu, fail
+            ;
+            Command == cekInfo -> cekInfo, fail
+            ;
+            Command = mainkanKartu(N) -> mainkanKartu(N), fail
+            ; 
+            /* for testing */
+            Command == skip -> skip, fail
+            ;
+            write('Command not found'), nl, fail
         ), 
         fail
     ).
