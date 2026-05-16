@@ -179,7 +179,7 @@ inisialisasiDiscard([Head|Tail], Kartu, Deck) :-
 
 tampilkanKartu :-
     kartu(W, J),
-    write(W), write('-'), write(J), nl.
+    format('~w - ~w.~n', [W, J]).
 
 game_loop :-
     repeat,
