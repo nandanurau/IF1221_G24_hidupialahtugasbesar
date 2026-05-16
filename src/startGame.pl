@@ -42,7 +42,7 @@ startGame :-
     KartuMeja = kartu(WM, JM),
     format('Kartu discard top: ~w-~w~n', [WM, JM]),
 
-    game_loop.
+    gameLoop.
     % gantiGiliran.
     
 /*Input pemain*/
@@ -181,7 +181,7 @@ tampilkanKartu :-
     kartu(W, J),
     write(W), write('-'), write(J), nl.
 
-game_loop :-
+gameLoop :-
     repeat,
     nl,
     cekGiliran,
@@ -200,7 +200,11 @@ game_loop :-
             /* Action Command */
             Command = mainkanKartu(N) -> mainkanKartu(N), fail
             ;
+            Command = ambilKartu -> ambilKartu, fail
+            ;
             /* Supporting Command */
+            Command == lihatCommand -> lihatCommand, fail
+            ;
             Command == lihatKartu -> lihatKartu, fail
             ;
             Command == cekInfo -> cekInfo, fail
