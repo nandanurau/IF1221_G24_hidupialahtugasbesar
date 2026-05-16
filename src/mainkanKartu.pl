@@ -22,12 +22,6 @@ ambilKartuDariDeck(Pemain, N) :-
     append_list(TanganLama, KartuBaru, TanganBaru),
     assertz(kartu_tangan(Pemain, TanganBaru)).
 
-/* Mengambil 1 kartu dari deck dan melanjutkan ke giliran selanjutnya */
-ambilKartu :-
-    urutan_pemain([Pemain|_]),
-    ambilKartuDariDeck(Pemain, 1),
-    gantiGiliran.
-
 /* Meminta pemain pilih warna baru */
 pilihWarna(Warna) :-
     repeat,

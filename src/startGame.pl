@@ -197,12 +197,15 @@ game_loop :-
         retractall(tumpukan_deck(_))
         ;
         (
+            /* Action Command */
+            Command = mainkanKartu(N) -> mainkanKartu(N), fail
+            ;
+            /* Supporting Command */
             Command == lihatKartu -> lihatKartu, fail
             ;
             Command == cekInfo -> cekInfo, fail
             ;
-            Command = mainkanKartu(N) -> mainkanKartu(N), fail
-            ; 
+
             /* for testing */
             Command == skip -> skip, fail
             ;

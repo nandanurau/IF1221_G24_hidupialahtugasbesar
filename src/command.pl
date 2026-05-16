@@ -54,6 +54,14 @@ lihatCommand :-
     write('2. lihatKartu'), nl,
     write('3. cekInfo'), nl.
 
+/* ambilKartu */
+/* Mengambil 1 kartu dari deck dan melanjutkan ke giliran selanjutnya */
+ambilKartu :-
+    urutan_pemain([Pemain|_]),
+    ambilKartuDariDeck(Pemain, 1),
+    gantiGiliran.
+
+
 /* for testing */
 skip :-
     gantiGiliran.
