@@ -46,16 +46,40 @@ printPlayerDetail([P|T], Idx) :-
 
 /* lihatCommand */
 lihatCommand :-
-    nl,
-    write('Aksi utama yang tersedia:'), nl,
-    write('1. mainkanKartu'), nl,
-    write('2. ambilKartu'), nl,
-    write('3. tantang'), nl,
+    (
+        last_action(_, kartu(hitam, wild_draw_four), _) ->
+        nl,
+        write('Aksi utama yang tersedia:'), nl,
+        write('1. ambilKartu'), nl,
+        write('2. tantang'), nl
+        ;
+        last_action(_, kartu(_, draw_two), _) ->
+        nl,
+        write('Aksi utama yang tersedia:'), nl,
+        write('1. ambilKartu'), nl
+        ;
+        nl,
+        write('Aksi utama yang tersedia:'), nl,
+        write('1. mainkanKartu'), nl,
+        write('2. ambilKartu'), nl
+    ),
     nl,
     write('Aksi pendukung yang tersedia:'), nl,
     write('1. lihatCommand'), nl,
     write('2. lihatKartu'), nl,
     write('3. cekInfo'), nl.
+
+% lihatCommand :-
+%     nl,
+%     write('Aksi utama yang tersedia:'), nl,
+%     write('1. mainkanKartu'), nl,
+%     write('2. ambilKartu'), nl,
+%     write('3. tantang'), nl,
+%     nl,
+%     write('Aksi pendukung yang tersedia:'), nl,
+%     write('1. lihatCommand'), nl,
+%     write('2. lihatKartu'), nl,
+%     write('3. cekInfo'), nl.
 
 
 /* ambilKartu */

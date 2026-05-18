@@ -2,6 +2,7 @@
 :- include('command.pl').
 :- include('mainkanKartu.pl').
 :- include('rules.pl').
+:- include('endGame.pl').
 
 :- dynamic(kartu_meja/1).
 :- dynamic(kartu_tangan/2). 
@@ -184,20 +185,22 @@ tampilkanKartu :-
 
 gameLoop :-
     repeat,
-    nl,
-    cekGiliran,
-    write('>> '),
-    read(Command),
     (
-        /* for testing */
-        Command == exit -> !,
-        write('Game ended.'), nl,
+        /* if endGame */
+        kartu_tangan(Pemain, []) ->
+        endGame,
         retractall(urutan_pemain(_)),
         retractall(kartu_tangan(_, _)),
         retractall(kartu_meja(_)),
         retractall(tumpukan_deck(_)),
-        retractall(last_action(_, _, _))
+        retractall(last_action(_, _, _)), 
+        retractall(game_started),
+        !
         ;
+        nl,
+        cekGiliran,
+        write('>> '),
+        read(Command),
         (
             /* Action Command */
             Command = mainkanKartu(N) -> mainkanKartu(N), fail
@@ -220,6 +223,5 @@ gameLoop :-
             ;
 
             write('Command not found'), nl, fail
-        ), 
-        fail
+        )
     ).
