@@ -39,9 +39,9 @@ terapkanEfek(skip) :-
     gantiGiliran.
 terapkanEfek(reverse) :-
     write('Arah permainan dibalik.'), nl,
-    retract(urutan_pemain(List)),
-    reverse_list(List, NewList),
-    assertz(urutan_pemain(NewList)).
+    retract(urutan_pemain([H|T])),
+    reverse_list(T, NewList),
+    assertz(urutan_pemain([H|NewList])).
 terapkanEfek(draw_two) :-
     urutan_pemain([_, PemainBerikutnya|_]),
     write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl.

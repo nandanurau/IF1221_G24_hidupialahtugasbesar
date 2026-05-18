@@ -1,7 +1,7 @@
 :- dynamic(status_uni/2).
 
-:- include('fakta.pl').
-:- include('rules.pl').
+% :- include('fakta.pl').
+% :- include('rules.pl').
 
 /*Uni*/
 uni(NomorUrutKartuDiTangan) :-
