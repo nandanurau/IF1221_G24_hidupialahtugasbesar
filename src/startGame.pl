@@ -19,6 +19,7 @@ startGame :-
     retractall(kartu_tangan(_, _)),
     retractall(kartu_meja(_)),
     retractall(tumpukan_deck(_)),
+    retractall(last_action(_, _, _)),
 
     assertz(game_started),
 
@@ -194,7 +195,8 @@ gameLoop :-
         retractall(urutan_pemain(_)),
         retractall(kartu_tangan(_, _)),
         retractall(kartu_meja(_)),
-        retractall(tumpukan_deck(_))
+        retractall(tumpukan_deck(_)),
+        retractall(last_action(_, _, _))
         ;
         (
             /* Action Command */
@@ -202,6 +204,13 @@ gameLoop :-
             ;
             Command = ambilKartu -> ambilKartu, fail
             ;
+
+            /* Specific Action Command */
+            Command = uni(N) -> uni(N), fail
+            ;
+            Command == tantang -> tantang, fail
+            ;
+
             /* Supporting Command */
             Command == lihatCommand -> lihatCommand, fail
             ;
@@ -210,9 +219,6 @@ gameLoop :-
             Command == cekInfo -> cekInfo, fail
             ;
 
-            /* for testing */
-            Command == skip -> skip, fail
-            ;
             write('Command not found'), nl, fail
         ), 
         fail

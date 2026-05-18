@@ -1,3 +1,5 @@
+:- dynamic(last_action/3).
+
 /* lihatKartu */
 lihatKartu :-
     urutan_pemain([P|_]),
@@ -41,6 +43,7 @@ printPlayerDetail([P|T], Idx) :-
     NewIdx is Idx + 1,
     printPlayerDetail(T, NewIdx).
 
+
 /* lihatCommand */
 lihatCommand :-
     nl,
@@ -54,6 +57,7 @@ lihatCommand :-
     write('2. lihatKartu'), nl,
     write('3. cekInfo'), nl.
 
+
 /* ambilKartu */
 /* Mengambil 1 kartu dari deck dan melanjutkan ke giliran selanjutnya */
 ambilKartu :-
@@ -62,6 +66,25 @@ ambilKartu :-
     gantiGiliran.
 
 
-/* for testing */
-skip :-
-    gantiGiliran.
+/* tantang */
+tantang :-
+    urutan_pemain([Penantang|_]),
+    (
+        last_action(PemainSebelum, kartu(hitam, wild_draw_four), KartuMejaSebelum),
+        write('Tantangan dilakukan!'), nl,
+        format('Memeriksa kartu ~w...', [Penantang]), nl,
+        (
+            adaKartuCocok(PemainSebelum, KartuMejaSebelum) ->
+            format('Tantangan berhasil. ~w mendapatkan 4 kartu acak sebagai konsekuensi.', [PemainSebelum]), nl,
+            ambilKartuDariDeck(PemainSebelum, 4),
+            retractall(last_action(_, _, _))
+            ;
+            format('Tantangan gagal. ~w mendapatkan 6 kartu acak.', [Penantang]), nl,
+            ambilKartuDariDeck(Penantang, 6),
+            retractall(last_action(_, _, _)),
+            gantiGiliran
+        )
+        ;
+        write('Tidak ada kartu wild draw four yang dapat ditantang.'), nl
+    ), !.
+

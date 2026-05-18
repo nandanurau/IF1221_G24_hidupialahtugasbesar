@@ -45,8 +45,8 @@ terapkanEfek(reverse) :-
 terapkanEfek(draw_two) :-
     urutan_pemain([_, PemainBerikutnya|_]),
     write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl,
-    ambilKartuDariDeck(PemainBerikutnya, 2),
-    gantiGiliran.
+    ambilKartuDariDeck(PemainBerikutnya, 2).
+    % gantiGiliran.
 terapkanEfek(wild) :-
     pilihWarna(WarnaBaru),
     retract(kartu_meja(_)),
@@ -58,9 +58,9 @@ terapkanEfek(wild_draw_four) :-
     retract(kartu_meja(_)),
     assertz(kartu_meja(kartu(WarnaBaru, wild_draw_four))),
     urutan_pemain([_, PemainBerikutnya|_]),
-    write('Pemain berikutnya mengambil 4 kartu dan kehilangan giliran.'), nl,
-    ambilKartuDariDeck(PemainBerikutnya, 4),
-    gantiGiliran.
+    write('Pemain berikutnya mengambil 4 kartu dan kehilangan giliran.'), nl.
+    % ambilKartuDariDeck(PemainBerikutnya, 4).
+    % gantiGiliran.
 terapkanEfek(_) :- true.
 
 adaKartuCocok(Pemain, KartuMeja) :-
@@ -82,10 +82,15 @@ mainkanKartu(NomorUrutKartuDiTangan) :-
         kartu_meja(KartuMeja),
 
         (   kartuValid(KartuDipilih, KartuMeja) ->
-            (   KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(Pemain, KartuMeja) ->
-                write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl
-            ;   KartuDipilih = kartu(W, J),
+            (   
+            %     KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(Pemain, KartuMeja) ->
+            %     write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl
+            % ;   
+                KartuDipilih = kartu(W, J),
                 write(Pemain), write(' memainkan kartu: '), write(W), write('-'), write(J), nl,
+
+                retractall(last_action(_, _, _)),
+                assertz(last_action(Pemain, KartuDipilih, KartuMeja)),
 
                 delete_element(Hand, Index, NewHand),
                 retract(kartu_tangan(Pemain, _)),
