@@ -62,8 +62,23 @@ lihatCommand :-
 /* Mengambil 1 kartu dari deck dan melanjutkan ke giliran selanjutnya */
 ambilKartu :-
     urutan_pemain([Pemain|_]),
-    ambilKartuDariDeck(Pemain, 1),
-    gantiGiliran.
+    (
+        last_action(_, kartu(hitam, wild_draw_four), _) ->
+        format('~w mengambil 4 kartu dan skip giliran.', [Pemain]), nl,
+        ambilKartuDariDeck(Pemain, 4),
+        retractall(last_action(_, _, _)),
+        gantiGiliran
+        ;
+        last_action(_, kartu(_, draw_two), _) ->
+        format('~w mengambil 2 kartu dan skip giliran.', [Pemain]), nl,
+        ambilKartuDariDeck(Pemain, 2),
+        retractall(last_action(_, _, _)),
+        gantiGiliran
+        ;
+        format('~w mengambil 1 kartu dari deck.', [Pemain]), nl,
+        ambilKartuDariDeck(Pemain, 1),
+        gantiGiliran
+    ).
 
 
 /* tantang */

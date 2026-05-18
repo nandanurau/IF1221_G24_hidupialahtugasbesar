@@ -44,8 +44,8 @@ terapkanEfek(reverse) :-
     assertz(urutan_pemain(NewList)).
 terapkanEfek(draw_two) :-
     urutan_pemain([_, PemainBerikutnya|_]),
-    write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl,
-    ambilKartuDariDeck(PemainBerikutnya, 2).
+    write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl.
+    % ambilKartuDariDeck(PemainBerikutnya, 2).
     % gantiGiliran.
 terapkanEfek(wild) :-
     pilihWarna(WarnaBaru),
@@ -70,6 +70,12 @@ adaKartuCocok(Pemain, KartuMeja) :-
     kartuValid(K, KartuMeja), !.
 
 /* mainkanKartu */
+/* Cek apakah mainkanKartu bisa dilakukan atau engga (jika last cardnya wild_draw_four atau draw_two) */
+mainkanKartu(_) :-
+    last_action(_, kartu(_, J), _),
+    (J == wild_draw_four ; J == draw_two), 
+    !,
+    write('Kamu tidak bisa memainkan kartu!'), nl, fail.
 mainkanKartu(NomorUrutKartuDiTangan) :-
     urutan_pemain([Pemain|_]),
     kartu_tangan(Pemain, Hand),
