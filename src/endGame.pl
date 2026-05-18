@@ -1,4 +1,4 @@
-:- include('startGame.pl').
+% :- include('startGame.pl').
 
 /* menghitung nilai setiap jenis kartu */
 nilaiKartu(kartu(_, N), N) :-

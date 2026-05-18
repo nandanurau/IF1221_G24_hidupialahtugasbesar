@@ -127,3 +127,21 @@ tantang :-
         write('Tidak ada kartu wild draw four yang dapat ditantang.'), nl
     ), !.
 
+
+/* Debugging */
+skip :-
+    gantiGiliran.
+
+sub :-
+    urutan_pemain([Pemain|_]),
+    kartu_tangan(Pemain, Hand),
+    (   Hand == [] ->
+        write('DEBUG: Kartu sudah kosong, tidak bisa dikurangi lagi.'), nl
+    ;   % Ambil kartu pertama (Head) dan sisakan sisanya (Tail)
+        Hand = [_|Tail],
+        retract(kartu_tangan(Pemain, _)),
+        assertz(kartu_tangan(Pemain, Tail)),
+        format('DEBUG: 1 Kartu milik ~w berhasil dihapus.', [Pemain]), nl,
+        % Langsung pindah giliran setelah kartu dikurangi
+        gantiGiliran
+    ).

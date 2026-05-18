@@ -3,6 +3,7 @@
 :- include('mainkanKartu.pl').
 :- include('rules.pl').
 :- include('endGame.pl').
+:- include('uni.pl').
 
 :- dynamic(kartu_meja/1).
 :- dynamic(kartu_tangan/2). 
@@ -220,6 +221,12 @@ gameLoop :-
             Command == lihatKartu -> lihatKartu, fail
             ;
             Command == cekInfo -> cekInfo, fail
+            ;
+
+            /* Debugging */
+            Command == sub -> sub, fail
+            ;
+            Command == skip -> skip, fail
             ;
 
             write('Command not found'), nl, fail
