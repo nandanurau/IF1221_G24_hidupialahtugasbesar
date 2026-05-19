@@ -9,6 +9,7 @@
 :- dynamic(kartu_tangan/2). 
 :- dynamic(urutan_pemain/1).
 :- dynamic(tumpukan_deck/1).
+:- dynamic(total_pemain/1).
 :- dynamic(game_started/0).
 
 /* startGame*/
@@ -22,6 +23,7 @@ startGame :-
     retractall(kartu_meja(_)),
     retractall(tumpukan_deck(_)),
     retractall(last_action(_, _, _)),
+    retractall(total_pemain(_)),
 
     assertz(game_started),
 
@@ -59,8 +61,12 @@ jumlahPemain(N) :-
     write('Masukkan jumlah pemain: '),
     read(X),
     (   number(X) ->  
-    (jumlahPemainDiRange(X) -> N = X, !
-        ; write('Mohon masukkan angka antara 2 - 4'), nl, fail
+        (
+            jumlahPemainDiRange(X) -> N = X, 
+            assertz(total_pemain(X)),
+            !
+        ; 
+            write('Mohon masukkan angka antara 2 - 4'), nl, fail
         )
     ; write('Input harus berupa angka'), nl, fail
     ).
@@ -188,13 +194,14 @@ gameLoop :-
     repeat,
     (
         /* if endGame */
-        kartu_tangan(Pemain, []) ->
+        kartu_tangan(_, []) ->
         endGame,
         retractall(urutan_pemain(_)),
         retractall(kartu_tangan(_, _)),
         retractall(kartu_meja(_)),
         retractall(tumpukan_deck(_)),
         retractall(last_action(_, _, _)), 
+        retractall(total_pemain(_)),
         retractall(game_started),
         !
         ;

@@ -47,43 +47,43 @@ printPlayerDetail([P|T], Idx) :-
 /* lihatCommand */
 lihatCommand :-
     (
+        /* Kalo kartu sebelumnya adalah wild_draw_four */
         last_action(_, kartu(hitam, wild_draw_four), _) ->
         nl,
         write('Aksi utama yang tersedia:'), nl,
         write('1. ambilKartu'), nl,
-        write('2. tangkap'), nl,
-        write('3. tantang'), nl
+        write('2. tantang'), nl
         ;
+        /* Kalo kartu sebelumnya adalah draw_two */
         last_action(_, kartu(_, draw_two), _) ->
         nl,
         write('Aksi utama yang tersedia:'), nl,
-        write('1. ambilKartu'), nl,
-        write('2. tangkap'), nl
+        write('1. ambilKartu'), nl
         ;
+        /* Kalo kartu di tangan sisa 2 */
+        urutan_pemain([PemainAktif|_]),
+        kartu_tangan(PemainAktif, Hand),
+        get_length(Hand, Jumlah),
+        Jumlah == 2 -> 
         nl,
         write('Aksi utama yang tersedia:'), nl,
         write('1. mainkanKartu'), nl,
         write('2. ambilKartu'), nl,
         write('3. tangkap'), nl,
         write('4. uni'), nl
+        ;
+        /* Kalo giliran biasa */
+        nl,
+        write('Aksi utama yang tersedia:'), nl,
+        write('1. mainkanKartu'), nl,
+        write('2. ambilKartu'), nl,
+        write('3. tangkap'), nl
     ),
     nl,
     write('Aksi pendukung yang tersedia:'), nl,
     write('1. lihatCommand'), nl,
     write('2. lihatKartu'), nl,
     write('3. cekInfo'), nl.
-
-% lihatCommand :-
-%     nl,
-%     write('Aksi utama yang tersedia:'), nl,
-%     write('1. mainkanKartu'), nl,
-%     write('2. ambilKartu'), nl,
-%     write('3. tantang'), nl,
-%     nl,
-%     write('Aksi pendukung yang tersedia:'), nl,
-%     write('1. lihatCommand'), nl,
-%     write('2. lihatKartu'), nl,
-%     write('3. cekInfo'), nl.
 
 
 /* ambilKartu */
@@ -141,11 +141,10 @@ sub :-
     kartu_tangan(Pemain, Hand),
     (   Hand == [] ->
         write('DEBUG: Kartu sudah kosong, tidak bisa dikurangi lagi.'), nl
-    ;   % Ambil kartu pertama (Head) dan sisakan sisanya (Tail)
+    ;  
         Hand = [_|Tail],
         retract(kartu_tangan(Pemain, _)),
         assertz(kartu_tangan(Pemain, Tail)),
         format('DEBUG: 1 Kartu milik ~w berhasil dihapus.', [Pemain]), nl,
-        % Langsung pindah giliran setelah kartu dikurangi
         gantiGiliran
     ).

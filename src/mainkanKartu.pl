@@ -35,6 +35,10 @@ pilihWarna(Warna) :-
         fail
     ).
 
+terkenaEfekDraw :-
+    last_action(_, kartu(_, J), _),
+    (J == wild_draw_four ; J == draw_two).
+
 adaKartuCocok(Pemain, KartuMeja) :-
     kartu_tangan(Pemain, Hand),
     member(K, Hand),
@@ -44,8 +48,7 @@ adaKartuCocok(Pemain, KartuMeja) :-
 /* mainkanKartu */
 /* Cek apakah mainkanKartu bisa dilakukan atau engga (jika last cardnya wild_draw_four atau draw_two) */
 mainkanKartu(_) :-
-    last_action(_, kartu(_, J), _),
-    (J == wild_draw_four ; J == draw_two), 
+    terkenaEfekDraw, 
     !,
     write('Kamu tidak bisa memainkan kartu!'), nl, fail.
 mainkanKartu(NomorUrutKartuDiTangan) :-
@@ -61,9 +64,6 @@ mainkanKartu(NomorUrutKartuDiTangan) :-
 
         (   kartuValid(KartuDipilih, KartuMeja) ->
             (   
-            %     KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(Pemain, KartuMeja) ->
-            %     write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl
-            % ;   
                 KartuDipilih = kartu(W, J),
                 write(Pemain), write(' memainkan kartu: '), write(W), write('-'), write(J), nl,
 
