@@ -21,6 +21,7 @@ startGame :-
     retractall(kartu_tangan(_, _)),
     retractall(kartu_meja(_)),
     retractall(tumpukan_deck(_)),
+    retractall(last_action(_, _, _)),
 
     assertz(game_started),
 
@@ -44,7 +45,7 @@ startGame :-
     KartuMeja = kartu(WM, JM),
     format('Kartu discard top: ~w-~w~n', [WM, JM]),
 
-    game_loop.
+    gameLoop.
     % gantiGiliran.
     
 /*Input pemain*/
@@ -183,32 +184,51 @@ tampilkanKartu :-
     kartu(W, J),
     format('~w - ~w.~n', [W, J]).
 
-game_loop :-
+gameLoop :-
     repeat,
-    nl,
-    cekGiliran,
-    write('>> '),
-    read(Command),
     (
-        /* for testing */
-        Command == exit -> !,
-        write('Game ended.'), nl,
+        /* if endGame */
+        kartu_tangan(Pemain, []) ->
+        endGame,
         retractall(urutan_pemain(_)),
         retractall(kartu_tangan(_, _)),
         retractall(kartu_meja(_)),
-        retractall(tumpukan_deck(_))
+        retractall(tumpukan_deck(_)),
+        retractall(last_action(_, _, _)), 
+        retractall(game_started),
+        !
         ;
+        nl,
+        cekGiliran,
+        write('>> '),
+        read(Command),
         (
+            /* Action Command */
+            Command = mainkanKartu(N) -> mainkanKartu(N), fail
+            ;
+            Command = ambilKartu -> ambilKartu, fail
+            ;
+
+            /* Specific Action Command */
+            Command = uni(N) -> uni(N), fail
+            ;
+            Command == tantang -> tantang, fail
+            ;
+
+            /* Supporting Command */
+            Command == lihatCommand -> lihatCommand, fail
+            ;
             Command == lihatKartu -> lihatKartu, fail
             ;
             Command == cekInfo -> cekInfo, fail
             ;
-            Command = mainkanKartu(N) -> mainkanKartu(N), fail
-            ; 
-            /* for testing */
+
+            /* Debugging */
+            Command == sub -> sub, fail
+            ;
             Command == skip -> skip, fail
             ;
+
             write('Command not found'), nl, fail
-        ), 
-        fail
+        )
     ).

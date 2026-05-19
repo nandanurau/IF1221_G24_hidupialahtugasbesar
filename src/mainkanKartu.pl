@@ -22,12 +22,6 @@ ambilKartuDariDeck(Pemain, N) :-
     append_list(TanganLama, KartuBaru, TanganBaru),
     assertz(kartu_tangan(Pemain, TanganBaru)).
 
-/* Mengambil 1 kartu dari deck dan melanjutkan ke giliran selanjutnya */
-ambilKartu :-
-    urutan_pemain([Pemain|_]),
-    ambilKartuDariDeck(Pemain, 1),
-    gantiGiliran.
-
 /* Meminta pemain pilih warna baru */
 pilihWarna(Warna) :-
     repeat,
@@ -45,14 +39,14 @@ terapkanEfek(skip) :-
     gantiGiliran.
 terapkanEfek(reverse) :-
     write('Arah permainan dibalik.'), nl,
-    retract(urutan_pemain(List)),
-    reverse_list(List, NewList),
-    assertz(urutan_pemain(NewList)).
+    retract(urutan_pemain([H|T])),
+    reverse_list(T, NewList),
+    assertz(urutan_pemain([H|NewList])).
 terapkanEfek(draw_two) :-
     urutan_pemain([_, PemainBerikutnya|_]),
-    write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl,
-    ambilKartuDariDeck(PemainBerikutnya, 2),
-    gantiGiliran.
+    write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl.
+    % ambilKartuDariDeck(PemainBerikutnya, 2).
+    % gantiGiliran.
 terapkanEfek(wild) :-
     pilihWarna(WarnaBaru),
     retract(kartu_meja(_)),
@@ -64,9 +58,9 @@ terapkanEfek(wild_draw_four) :-
     retract(kartu_meja(_)),
     assertz(kartu_meja(kartu(WarnaBaru, wild_draw_four))),
     urutan_pemain([_, PemainBerikutnya|_]),
-    write('Pemain berikutnya mengambil 4 kartu dan kehilangan giliran.'), nl,
-    ambilKartuDariDeck(PemainBerikutnya, 4),
-    gantiGiliran.
+    write('Pemain berikutnya mengambil 4 kartu dan kehilangan giliran.'), nl.
+    % ambilKartuDariDeck(PemainBerikutnya, 4).
+    % gantiGiliran.
 terapkanEfek(_) :- true.
 
 adaKartuCocok(Pemain, KartuMeja) :-
@@ -76,6 +70,12 @@ adaKartuCocok(Pemain, KartuMeja) :-
     kartuValid(K, KartuMeja), !.
 
 /* mainkanKartu */
+/* Cek apakah mainkanKartu bisa dilakukan atau engga (jika last cardnya wild_draw_four atau draw_two) */
+mainkanKartu(_) :-
+    last_action(_, kartu(_, J), _),
+    (J == wild_draw_four ; J == draw_two), 
+    !,
+    write('Kamu tidak bisa memainkan kartu!'), nl, fail.
 mainkanKartu(NomorUrutKartuDiTangan) :-
     urutan_pemain([Pemain|_]),
     kartu_tangan(Pemain, Hand),
@@ -88,10 +88,15 @@ mainkanKartu(NomorUrutKartuDiTangan) :-
         kartu_meja(KartuMeja),
 
         (   kartuValid(KartuDipilih, KartuMeja) ->
-            (   KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(Pemain, KartuMeja) ->
-                write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl
-            ;   KartuDipilih = kartu(W, J),
+            (   
+            %     KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(Pemain, KartuMeja) ->
+            %     write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl
+            % ;   
+                KartuDipilih = kartu(W, J),
                 write(Pemain), write(' memainkan kartu: '), write(W), write('-'), write(J), nl,
+
+                retractall(last_action(_, _, _)),
+                assertz(last_action(Pemain, KartuDipilih, KartuMeja)),
 
                 delete_element(Hand, Index, NewHand),
                 retract(kartu_tangan(Pemain, _)),
