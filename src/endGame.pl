@@ -1,6 +1,8 @@
 /* menghitung nilai setiap jenis kartu */
+nilaiKartu(kartu(_, 0), 1).
 nilaiKartu(kartu(_, N), N) :-
-    angka(N).
+    angka(N),
+    N \== 0.
 nilaiKartu(kartu(_, J), 10) :-
     (J == skip ; J == reverse ; J == draw_two).
 nilaiKartu(kartu(_, J), 20) :-
