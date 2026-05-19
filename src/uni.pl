@@ -13,7 +13,7 @@ uni(NomorUrutKartuDiTangan) :-
     ;   getNomorKartu(NomorUrutKartuDiTangan, Hand, KartuDipilih, Index),
         kartu_meja(KartuMeja),
         ( kartuValid(KartuDipilih, KartuMeja) ->
-        (   KartuDipilih = kartu(hitam, wild_draw_four), punyaKartuCocok(PemainAktif, KartuMeja) ->
+            (   KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(PemainAktif, KartuMeja) ->
                 write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl, fail
                 ;   (Jumlah == 2 ->
                     KartuDipilih = kartu(W, J),
@@ -47,7 +47,7 @@ uni(NomorUrutKartuDiTangan) :-
                     assertz(kartu_tangan(PemainAktif, [KartuPenalti|Hand])),
 
                     gantiGiliran,
-                    cekGiliran, !
+                    !
                 )
             )
         ;   write('Kartu tidak valid. Pilih kartu lain.'), nl, fail
