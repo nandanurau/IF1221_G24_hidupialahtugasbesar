@@ -1,8 +1,5 @@
 :- dynamic(status_uni/2).
 
-% :- include('fakta.pl').
-% :- include('rules.pl').
-
 /*Uni*/
 uni(NomorUrutKartuDiTangan) :-
     urutan_pemain([PemainAktif|_]),
@@ -53,3 +50,13 @@ uni(NomorUrutKartuDiTangan) :-
         ;   write('Kartu tidak valid. Pilih kartu lain.'), nl, fail
         )
     ).
+
+/* Tangkap */
+tangkap(NamaPemain) :-
+    urutan_pemain([PemainAktif|_]),
+    kartu_tangan(NamaPemain, Hand),
+    get_length(Hand, JumlahKartu),
+    (JumlahKartu is 1, \+ (status_uni(NamaPemain, sudah)) -> (format('~w tertangkap tidak menyerukan UNI.',[NamaPemain]), nl, ambilKartuDariDeck(NamaPemain,2), format('~w mendapatkan 2 kartu penalti.',[NamaPemain])); (write('Tidak valid!'), nl, ambilKartuDariDeck(PemainAktif,1), format('~w mendapatkan 1 kartu penalti.',[PemainAktif]))),
+    nl,
+    gantiGiliran,
+    cekGiliran.
