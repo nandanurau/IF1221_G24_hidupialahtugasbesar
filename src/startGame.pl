@@ -231,13 +231,6 @@ gameLoop :-
             ;
             Command == cekInfo -> cekInfo, fail
             ;
-
-            /* Debugging */
-            Command == sub -> sub, fail
-            ;
-            Command == skip -> skip, fail
-            ;
-
             write('Command not found'), nl, fail
         )
     ).

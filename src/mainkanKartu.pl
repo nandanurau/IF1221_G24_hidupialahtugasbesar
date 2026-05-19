@@ -31,7 +31,7 @@ pilihWarna(Warna) :-
     read(Input),
     ( warna(Input), Input \== hitam ->
         Warna = Input, !
-    ; write('Warna tidak valid. Pilih: merah/kuning/hijau/biru: '),
+    ; write('Warna tidak valid. '),
         fail
     ).
 
