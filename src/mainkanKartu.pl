@@ -64,6 +64,10 @@ terapkanEfek(wild_draw_four) :-
     write('Pemain berikutnya mengambil 4 kartu dan kehilangan giliran.'), nl.
 terapkanEfek(_) :- true.
 
+terkenaEfekDraw :-
+    last_action(_, kartu(_, J), _),
+    (J == wild_draw_four ; J == draw_two).
+
 adaKartuCocok(Pemain, KartuMeja) :-
     kartu_tangan(Pemain, Hand),
     member(K, Hand),
@@ -73,8 +77,7 @@ adaKartuCocok(Pemain, KartuMeja) :-
 /* mainkanKartu */
 /* Cek apakah mainkanKartu bisa dilakukan atau engga (jika last cardnya wild_draw_four atau draw_two) */
 mainkanKartu(_) :-
-    last_action(_, kartu(_, J), _),
-    (J == wild_draw_four ; J == draw_two), 
+    terkenaEfekDraw, 
     !,
     write('Kamu tidak bisa memainkan kartu!'), nl, fail.
 mainkanKartu(NomorUrutKartuDiTangan) :-

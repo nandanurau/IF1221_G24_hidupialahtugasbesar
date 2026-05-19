@@ -31,8 +31,7 @@ uni(NomorUrutKartuDiTangan) :-
                     assertz(status_uni(PemainAktif, sudah)),
 
                     terapkanEfek(J),
-                    gantiGiliran,
-                    cekGiliran, !
+                    gantiGiliran, !
                 ;
                     write('Perintah tidak valid.'), nl,
                     format('~w mendapatkan 1 kartu acak sebagai penalti.', [PemainAktif]), nl,
@@ -52,6 +51,11 @@ uni(NomorUrutKartuDiTangan) :-
     ).
 
 /* Tangkap */
+tangkap(_) :-
+    urutan_pemain([PemainAktif|_]),
+    terkenaEfekDraw,
+    !,
+    format('~w tidak bisa melakukan tangkap!', [PemainAktif]).
 tangkap(NamaPemain) :-
     urutan_pemain([PemainAktif|_]),
     kartu_tangan(NamaPemain, Hand),

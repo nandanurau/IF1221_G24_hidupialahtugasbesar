@@ -23,6 +23,7 @@ startGame :-
     retractall(kartu_meja(_)),
     retractall(tumpukan_deck(_)),
     retractall(last_action(_, _, _)),
+    retractall(total_pemain(_)),
 
     assertz(game_started),
 
@@ -200,6 +201,7 @@ gameLoop :-
         retractall(kartu_meja(_)),
         retractall(tumpukan_deck(_)),
         retractall(last_action(_, _, _)), 
+        retractall(total_pemain(_)),
         retractall(game_started),
         !
         ;
