@@ -194,7 +194,7 @@ gameLoop :-
     repeat,
     (
         /* if endGame */
-        kartu_tangan(Pemain, []) ->
+        kartu_tangan(_, []) ->
         endGame,
         retractall(urutan_pemain(_)),
         retractall(kartu_tangan(_, _)),

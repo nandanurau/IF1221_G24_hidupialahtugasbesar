@@ -48,8 +48,7 @@ terapkanEfek(reverse) :-
         assertz(urutan_pemain([H|NewList]))
     ).
 terapkanEfek(draw_two) :-
-    urutan_pemain([_, PemainBerikutnya|_]),
-    write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl.
+    write('Pemain berikutnya harus mengambil 2 kartu.'), nl.
 terapkanEfek(wild) :-
     pilihWarna(WarnaBaru),
     retract(kartu_meja(_)),
@@ -60,8 +59,7 @@ terapkanEfek(wild_draw_four) :-
     pilihWarna(WarnaBaru),
     retract(kartu_meja(_)),
     assertz(kartu_meja(kartu(WarnaBaru, wild_draw_four))),
-    urutan_pemain([_, PemainBerikutnya|_]),
-    write('Pemain berikutnya mengambil 4 kartu dan kehilangan giliran.'), nl.
+    write('Pemain berikutnya mengambil 4 kartu.'), nl.
 terapkanEfek(_) :- true.
 
 terkenaEfekDraw :-
