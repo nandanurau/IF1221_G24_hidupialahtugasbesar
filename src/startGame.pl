@@ -1,10 +1,3 @@
-:- include('fakta.pl').
-:- include('command.pl').
-:- include('mainkanKartu.pl').
-:- include('rules.pl').
-:- include('uni.pl').
-:- include('endGame.pl'). 
-
 :- dynamic(kartu_meja/1).
 :- dynamic(kartu_tangan/2). 
 :- dynamic(urutan_pemain/1).
