@@ -39,14 +39,17 @@ terapkanEfek(skip) :-
     gantiGiliran.
 terapkanEfek(reverse) :-
     write('Arah permainan dibalik.'), nl,
-    retract(urutan_pemain([H|T])),
-    reverse_list(T, NewList),
-    assertz(urutan_pemain([H|NewList])).
+    (
+        total_pemain(2) ->
+        gantiGiliran
+        ;
+        retract(urutan_pemain([H|T])),
+        reverse_list(T, NewList),
+        assertz(urutan_pemain([H|NewList]))
+    ).
 terapkanEfek(draw_two) :-
     urutan_pemain([_, PemainBerikutnya|_]),
     write('Pemain berikutnya mengambil 2 kartu dan kehilangan giliran.'), nl.
-    % ambilKartuDariDeck(PemainBerikutnya, 2).
-    % gantiGiliran.
 terapkanEfek(wild) :-
     pilihWarna(WarnaBaru),
     retract(kartu_meja(_)),
@@ -59,8 +62,6 @@ terapkanEfek(wild_draw_four) :-
     assertz(kartu_meja(kartu(WarnaBaru, wild_draw_four))),
     urutan_pemain([_, PemainBerikutnya|_]),
     write('Pemain berikutnya mengambil 4 kartu dan kehilangan giliran.'), nl.
-    % ambilKartuDariDeck(PemainBerikutnya, 4).
-    % gantiGiliran.
 terapkanEfek(_) :- true.
 
 adaKartuCocok(Pemain, KartuMeja) :-
@@ -89,9 +90,6 @@ mainkanKartu(NomorUrutKartuDiTangan) :-
 
         (   kartuValid(KartuDipilih, KartuMeja) ->
             (   
-            %     KartuDipilih = kartu(hitam, wild_draw_four), adaKartuCocok(Pemain, KartuMeja) ->
-            %     write('Kartu tidak valid. Kamu masih punya kartu lain yang cocok di tangan.'), nl
-            % ;   
                 KartuDipilih = kartu(W, J),
                 write(Pemain), write(' memainkan kartu: '), write(W), write('-'), write(J), nl,
 
