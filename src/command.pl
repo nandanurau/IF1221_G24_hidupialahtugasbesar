@@ -51,17 +51,21 @@ lihatCommand :-
         nl,
         write('Aksi utama yang tersedia:'), nl,
         write('1. ambilKartu'), nl,
-        write('2. tantang'), nl
+        write('2. tangkap'), nl,
+        write('3. tantang'), nl
         ;
         last_action(_, kartu(_, draw_two), _) ->
         nl,
         write('Aksi utama yang tersedia:'), nl,
-        write('1. ambilKartu'), nl
+        write('1. ambilKartu'), nl,
+        write('2. tangkap'), nl
         ;
         nl,
         write('Aksi utama yang tersedia:'), nl,
         write('1. mainkanKartu'), nl,
-        write('2. ambilKartu'), nl
+        write('2. ambilKartu'), nl,
+        write('3. tangkap'), nl,
+        write('4. uni'), nl
     ),
     nl,
     write('Aksi pendukung yang tersedia:'), nl,

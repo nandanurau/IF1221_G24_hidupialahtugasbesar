@@ -206,7 +206,9 @@ gameLoop :-
             /* Action Command */
             Command = mainkanKartu(N) -> mainkanKartu(N), fail
             ;
-            Command = ambilKartu -> ambilKartu, fail
+            Command == ambilKartu -> ambilKartu, fail
+            ;
+            Command = tangkap(N) -> tangkap(N), fail
             ;
 
             /* Specific Action Command */
