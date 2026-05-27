@@ -1,4 +1,5 @@
 :- dynamic(last_action/3).
+:- dynamic(kartu_tersembunyi/2).
 
 /* lihatKartu */
 lihatKartu :-
@@ -77,7 +78,9 @@ lihatCommand :-
         write('Aksi utama yang tersedia:'), nl,
         write('1. mainkanKartu'), nl,
         write('2. ambilKartu'), nl,
-        write('3. tangkap'), nl
+        write('3. tangkap'), nl,
+        write('4. sembunyikanKartu'), nl,
+        write('5. tampilkanKartu'), nl
     ),
     nl,
     write('Aksi pendukung yang tersedia:'), nl,
@@ -130,3 +133,39 @@ tantang :-
         ;
         write('Tidak ada kartu wild draw four yang dapat ditantang.'), nl
     ), !.
+
+
+/* sembunyikan kartu */
+sembunyikanKartu(NomorUrut) :-
+    urutan_pemain([PemainAktif|_]),
+    kartu_tangan(PemainAktif, Hand),
+    get_length(Hand, L),
+    ( L =< 1 ->
+        write('Kartu tidak berhasil disembunyikan, kamu hanya memiliki 1 kartu.'), nl, fail
+    ;   
+        getNomorKartu(NomorUrut, Hand, KartuDipilih, Index),
+        delete_element(Hand, Index, HandBaru),
+        retract(kartu_tangan(PemainAktif, _)),
+        assertz(kartu_tangan(PemainAktif, HandBaru)),
+        assertz(kartu_tersembunyi(PemainAktif, KartuDipilih)),
+        KartuDipilih = kartu(W, J),
+        format('Kartu ~w-~w berhasil disembunyikan.~n', [W, J]),
+        gantiGiliran,
+        cekGiliran
+    ). 
+
+/* tampilkan kartu */
+tampilkanKartu :-
+    urutan_pemain([PemainAktif|_]),
+    ( kartu_tersembunyi(PemainAktif, Kartu) ->
+        retract(kartu_tangan(PemainAktif, HandLama)),
+        NewHand = [Kartu|HandLama],
+        assertz(kartu_tangan(PemainAktif, NewHand)),
+        retract(kartu_tersembunyi(PemainAktif, Kartu)),
+        Kartu = kartu(W, J),
+        format('Kartu ~w-~w berhasil ditampilkan kembali.~n', [W, J]),
+        gantiGiliran,
+        cekGiliran
+    ;   
+        write('Tidak ada kartu yang sedang disembunyikan.'), nl, fail
+    ). 

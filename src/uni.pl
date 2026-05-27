@@ -56,18 +56,24 @@ tangkap(_) :-
     terkenaEfekDraw,
     !,
     format('~w tidak bisa melakukan tangkap!', [PemainAktif]).
+
 tangkap(NamaPemain) :-
     urutan_pemain([PemainAktif|_]),
-    kartu_tangan(NamaPemain, Hand),
-    get_length(Hand, JumlahKartu),
-    (
-        JumlahKartu is 1, \+ (status_uni(NamaPemain, sudah)) -> 
-        (
+    ( 
+        kartu_tersembunyi(NamaPemain, _) ->
+        format('Terdapat kartu yang disembunyikan oleh ~w. ~n', [NamaPemain]),
+        format('Perintah tangkap tidak valid. ~w mendapatkan 1 kartu penalti.', [PemainAktif]),
+        ambilKartuDariDeck(PemainAktif, 1)
+
+        ;
+    
+        kartu_tangan(NamaPemain, Hand),
+        get_length(Hand, JumlahKartu),
+        (( JumlahKartu is 1, \+ status_uni(NamaPemain, sudah)) -> 
             format('~w tertangkap tidak menyerukan UNI.',[NamaPemain]), nl, 
-            ambilKartuDariDeck(NamaPemain,2), format('~w mendapatkan 2 kartu penalti.',[NamaPemain])
-        )
+            ambilKartuDariDeck(NamaPemain,2), 
+            format('~w mendapatkan 2 kartu penalti.',[NamaPemain])
         ; 
-        (
             write('Tidak valid!'), nl, 
             ambilKartuDariDeck(PemainAktif,1), 
             format('~w mendapatkan 1 kartu penalti.',[PemainAktif]), nl
