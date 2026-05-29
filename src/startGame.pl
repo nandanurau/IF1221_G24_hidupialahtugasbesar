@@ -36,7 +36,7 @@ startGame :-
     inisialisasiDiscard(DeckSisa, KartuMeja, DeckFinal),
     assertz(kartu_meja(KartuMeja)),
     assertz(tumpukan_deck(DeckFinal)),
-    % tampilkanKartu,
+    % menampilkanKartu,
     KartuMeja = kartu(WM, JM),
     format('Kartu discard top: ~w-~w~n', [WM, JM]),
 
@@ -179,7 +179,7 @@ inisialisasiDiscard([Head|Tail], Kartu, Deck) :-
     append_list(Tail, [Head], DeckBaru),
     inisialisasiDiscard(DeckBaru, Kartu, Deck).
 
-tampilkanKartu :-
+menampilkanKartu :-
     kartu(W, J),
     format('~w - ~w.~n', [W, J]).
 
@@ -215,6 +215,10 @@ gameLoop :-
             Command = uni(N) -> uni(N), fail
             ;
             Command == tantang -> tantang, fail
+            ;
+            Command = sembunyikanKartu(N) -> sembunyikanKartu(N), fail
+            ;
+            Command == tampilkanKartu -> tampilkanKartu, fail
             ;
 
             /* Supporting Command */
