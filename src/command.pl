@@ -1,28 +1,53 @@
 :- dynamic(last_action/3).
-:- dynamic(kartu_tersembunyi/2).
+:- dynamic(kartu_tersembunyi/3).
+:- dynamic(temp_counter/1).
 
 /* lihatKartu */
 lihatKartu :-
     urutan_pemain([P|_]),
     kartu_tangan(P, List),
-    (   List == [] -> 
+    countTersembunyi(P, CountSembunyi),
+    get_length(List, LenHand),
+    Total is LenHand + CountSembunyi,
+    (   Total == 0 -> 
         write('Kartu kamu sudah habis!'), nl
-        ;
+    ;
         write('Berikut kartu yang anda miliki.'), nl,
-        printCardList(List, 1)
+        printCombined(P, List, 1, Total)
     ), !.
 
-printCardList([], _).
-printCardList([kartu(W, J)|T], No) :-
-    format('~d. ~w-~w~n', [No, W, J]),
-    !,
-    N1 is No + 1, 
-    printCardList(T, N1).
-printCardList([H|T], No) :-
-    format('~d. ~w~n', [No, H]),
-    N1 is No + 1,
-    printCardList(T, N1).
+countTersembunyi(P, Count) :-
+    retractall(temp_counter(_)),
+    assertz(temp_counter(0)),
+    (
+        kartu_tersembunyi(P, _, _),
+        temp_counter(C),
+        CNew is C+1,
+        retract(temp_counter(_)),
+        assertz(temp_counter(CNew)),
+        fail
+    ;
+        temp_counter(Count),
+        retractall(temp_counter(_))
+    ).
 
+printCombined(_, _, Curr, Total) :- Curr > Total , !.
+printCombined(P, ListTangan, Curr, Total) :-
+    ( kartu_tersembunyi(P, kartu(W, J), Curr) ->
+        format('~d. ~w-~w (disembunyikan)~n', [Curr, W, J]),
+        Next is Curr + 1,
+        printCombined(P, ListTangan, Next, Total)
+    ;
+        ListTangan = [kartu(W, J)|SisaTangan] ->
+        format('~d. ~w-~w~n', [Curr, W, J]),
+        Next is Curr + 1,
+        printCombined(P, SisaTangan, Next, Total)
+    ;
+        ListTangan = [H|SisaTangan] ->
+        format('~d. ~w~n', [Curr, H]),
+        Next is Curr + 1,
+        printCombined(P, SisaTangan, Next, Total)
+    ).
 
 /* cekInfo */
 cekInfo :-
@@ -147,7 +172,7 @@ sembunyikanKartu(NomorUrut) :-
         delete_element(Hand, Index, HandBaru),
         retract(kartu_tangan(PemainAktif, _)),
         assertz(kartu_tangan(PemainAktif, HandBaru)),
-        assertz(kartu_tersembunyi(PemainAktif, KartuDipilih)),
+        assertz(kartu_tersembunyi(PemainAktif, KartuDipilih, NomorUrut)),
         KartuDipilih = kartu(W, J),
         format('Kartu ~w-~w berhasil disembunyikan.~n', [W, J]),
         gantiGiliran,
@@ -157,11 +182,11 @@ sembunyikanKartu(NomorUrut) :-
 /* tampilkan kartu */
 tampilkanKartu :-
     urutan_pemain([PemainAktif|_]),
-    ( kartu_tersembunyi(PemainAktif, Kartu) ->
+    ( kartu_tersembunyi(PemainAktif, Kartu, _) ->
         retract(kartu_tangan(PemainAktif, HandLama)),
         NewHand = [Kartu|HandLama],
         assertz(kartu_tangan(PemainAktif, NewHand)),
-        retract(kartu_tersembunyi(PemainAktif, Kartu)),
+        retract(kartu_tersembunyi(PemainAktif, Kartu, _)),
         Kartu = kartu(W, J),
         format('Kartu ~w-~w berhasil ditampilkan kembali.~n', [W, J]),
         gantiGiliran,
