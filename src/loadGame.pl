@@ -1,4 +1,3 @@
-:- include('fakta.pl').
 :- include('saveGame.pl').
 
 /* loadGame */

@@ -71,7 +71,8 @@ lihatCommand :-
         write('1. mainkanKartu'), nl,
         write('2. ambilKartu'), nl,
         write('3. tangkap'), nl,
-        write('4. uni'), nl
+        write('4. uni'), nl,
+        write('5. godsHand'), nl
         ;
         /* Kalo giliran biasa */
         nl,
@@ -80,7 +81,8 @@ lihatCommand :-
         write('2. ambilKartu'), nl,
         write('3. tangkap'), nl,
         write('4. sembunyikanKartu'), nl,
-        write('5. tampilkanKartu'), nl
+        write('5. tampilkanKartu'), nl,
+        write('6. godsHand'), nl
     ),
     nl,
     write('Aksi pendukung yang tersedia:'), nl,
