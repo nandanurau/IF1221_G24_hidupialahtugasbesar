@@ -17,6 +17,7 @@ startGame :-
     retractall(tumpukan_deck(_)),
     retractall(last_action(_, _, _)),
     retractall(total_pemain(_)),
+    retractall(kartu_aksi_terakhir(_)),
 
     assertz(game_started),
 
@@ -133,7 +134,7 @@ inisialisasiDeck(Deck) :-
     append_list(DeckMerah, DeckKuning, Temp1),
     append_list(DeckHijau, DeckBiru, Temp2),
     append_list(Temp1, Temp2, DeckWarna),
-    DeckHitam = [kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four)],
+    DeckHitam = [kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, wild_draw_four), kartu(hitam, mimic), kartu(hitam, mimic), kartu(hitam, mimic), kartu(hitam, mimic)],
     append_list(DeckWarna, DeckHitam, Deck).
 
 buat_per_warna(Warna, [kartu(Warna, 0)|Sisa]) :-
