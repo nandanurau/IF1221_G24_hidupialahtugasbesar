@@ -220,6 +220,8 @@ gameLoop :-
             ;
             Command == tampilkanKartu -> tampilkanKartu, fail
             ;
+            Command == godsHand -> godsHand, fail
+            ;
 
             /* Supporting Command */
             Command == lihatCommand -> lihatCommand, fail
