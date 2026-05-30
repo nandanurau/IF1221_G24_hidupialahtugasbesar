@@ -6,9 +6,11 @@ kartuValid(kartu(W, _), kartu(W, _)) :-
 kartuValid(kartu(_, J), kartu(_, J)) :-
     J \== wild,
     J \== wild_draw_four,
+    J \== mimic,
     J \== draw_two, !.
 kartuValid(kartu(hitam, wild), _).
 kartuValid(kartu(hitam, wild_draw_four), _).
+kartuValid(kartu(hitam, mimic), _).
 
 /* Mengambil nomor kartu */
 getNomorKartu(Nomor, Hand, Kartu, Index) :-
